@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Image Transition Webapp</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+</head>
+<body>
+    <div class="container">
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading your invitation...</p>
+            <div class="loading-progress">
+                <div id="loadingBar" class="loading-bar"></div>
+            </div>
+        </div>
+
+        <!-- Image container -->
+        <div class="image-container" style="display: none;">
+            <div id="intro" class="gallery-image active intro-card">
+                <div class="intro-content">
+                    <h1 class="invitation-title">You're Invited!</h1>
+                    <h2 class="guest-name" id="guestName">Dear Guest</h2>
+                    <p class="invitation-text">
+                        We joyfully invite you to celebrate our wedding day.
+                        Your presence would make our special day even more meaningful.
+                    </p>
+                    <!-- <div class="swipe-instruction">
+                        <p>Swipe or click to view invitation →</p>
+                    </div> -->
+                </div>
+            </div>
+            <img id="image1" src="pages/p1.jpg" alt="Image 1" class="gallery-image">
+            <img id="image2" src="pages/p2.jpg" alt="Image 2" class="gallery-image">
+            <img id="image3" src="pages/p3.jpg" alt="Image 3" class="gallery-image">
+            <img id="image4" src="pages/p4.jpg" alt="Image 4" class="gallery-image">
+            <img id="image5" src="pages/p5.jpg" alt="Image 5" class="gallery-image">
+            <img id="image6" src="pages/p6.jpg" alt="Image 5" class="gallery-image">
+        </div>
+    </div>
+
+    <!-- Background Audio -->
+    <audio id="backgroundAudio" preload="auto" loop>
+        <source src="audio/audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

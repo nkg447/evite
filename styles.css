@@ -1,0 +1,442 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    max-width: 100vw;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+    background: #000;
+}
+
+.gallery-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: all 0.8s ease-in-out;
+    transform: scale(1.05);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.gallery-image.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Enhanced Touch Support */
+.image-container {
+    touch-action: pan-y;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Mobile-Optimized Indicators */
+.indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    z-index: 100;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dot.active {
+    background: #fff;
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+.dot:hover, .dot:active {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+/* Smooth transitions for all elements */
+.fade .gallery-image {
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading animation */
+.image-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: loading 1s linear infinite;
+    z-index: 1;
+}
+
+.image-container.loaded::before {
+    display: none;
+}
+
+@keyframes loading {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Desktop and larger tablets */
+@media (min-width: 768px) {
+    .container {
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .image-container {
+        height: 80vh;
+        border-radius: 16px;
+    }
+    
+    .indicators {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        background: rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+    }
+    
+    .dot {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 800px;
+        padding: 30px;
+    }
+    
+    .image-container {
+        height: 75vh;
+        border-radius: 20px;
+    }
+    
+    .dot {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 375px) {
+    .container {
+        padding: 5px;
+    }
+    
+    .image-container {
+        height: 88vh;
+        border-radius: 8px;
+    }
+    
+    .indicators {
+        bottom: 15px;
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (orientation: landscape) and (max-height: 500px) {
+    .image-container {
+        height: 85vh;
+    }
+    
+    .indicators {
+        bottom: 10px;
+        padding: 10px;
+    }
+}
+
+/* PWA and mobile enhancements */
+body.images-loaded {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Prevent zoom on double tap */
+* {
+    touch-action: manipulation;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .gallery-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .gallery-image {
+        transition: opacity 0.3s ease-in-out;
+    }
+    
+    .dot {
+        transition: background-color 0.2s ease;
+    }
+    
+    @keyframes loading {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(90deg); }
+    }
+}
+
+/* Intro Card Styles */
+.intro-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(248, 250, 252, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2d3748;
+}
+
+.intro-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+}
+
+.invitation-title {
+    font-size: 3.5rem;
+    font-weight: 300;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.guest-name {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 30px;
+    color: #4a5568;
+    font-style: italic;
+}
+
+.invitation-text {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #2d3748;
+    font-weight: 300;
+}
+
+.wedding-details {
+    margin-bottom: 40px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(102, 126, 234, 0.3);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.detail-line {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-weight: 300;
+}
+
+.swipe-instruction {
+    animation: pulse 2s infinite;
+}
+
+.swipe-instruction p {
+    font-size: 1rem;
+    color: #667eea;
+    font-weight: 400;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+/* Mobile responsiveness for intro card */
+@media (max-width: 768px) {
+    .intro-content {
+        padding: 20px;
+    }
+    
+    .invitation-title {
+        font-size: 2.5rem;
+    }
+    
+    .guest-name {
+        font-size: 1.5rem;
+    }
+    
+    .invitation-text {
+        font-size: 1rem;
+    }
+    
+    .detail-line {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .invitation-title {
+        font-size: 2rem;
+    }
+    
+    .guest-name {
+        font-size: 1.3rem;
+    }
+    
+    .invitation-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading indicator styles */
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 20px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.loading-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Hide loading indicator when images are loaded */
+.images-loaded .loading-indicator {
+    display: none;
+}
+
+.images-loaded .image-container {
+    display: block !important;
+}
