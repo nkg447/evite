@@ -6,7 +6,7 @@ function getURLParameter(name) {
 
 // Function to personalize the invitation
 function personalizeInvitation() {
-    const guestName = getURLParameter('name');
+    const guestName = atob(getURLParameter('name'));
     const guestNameElement = document.getElementById('guestName');
     
     if (guestName && guestNameElement) {
