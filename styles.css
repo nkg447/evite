@@ -440,3 +440,135 @@ html {
 .images-loaded .image-container {
     display: block !important;
 }
+
+/* Venue Page Styles */
+.venue-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.venue-content {
+    text-align: center;
+    max-width: 90%;
+    width: 100%;
+}
+
+.venue-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.venue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.venue-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.venue-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.venue-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.venue-link {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.venue-link:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.venue-link:active {
+    transform: scale(0.98);
+}
+
+.venue-link-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.map-icon {
+    font-size: 1.2rem;
+}
+
+.link-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Mobile optimizations for venue page */
+@media (max-width: 480px) {
+    .venue-title {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+    
+    .venue-item {
+        padding: 20px;
+        max-width: 350px;
+    }
+    
+    .venue-name {
+        font-size: 1.3rem;
+    }
+    
+    .venue-link {
+        padding: 10px 18px;
+    }
+    
+    .link-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+    .venue-title {
+        font-size: 1.8rem;
+    }
+    
+    .venue-item {
+        padding: 15px;
+        max-width: 300px;
+    }
+    
+    .venue-name {
+        font-size: 1.2rem;
+    }
+}

@@ -236,6 +236,7 @@ class ImageGallery {
         this.currentIndex = 0;
         this.intervalId = null;
         this.transitionTime = 5000; // Hardcoded to 5 seconds
+        this.manuallyPaused = false; // Track manual pause state
         
         this.attachEventListeners();
         this.setTransitionType('fade'); // Hardcoded to fade transition
@@ -247,7 +248,10 @@ class ImageGallery {
         // Dot indicators event listeners (only if dots exist)
         if (this.dots.length > 0) {
             this.dots.forEach((dot, index) => {
-                dot.addEventListener('click', () => this.goToSlide(index));
+                dot.addEventListener('click', () => {
+                    this.manuallyPaused = false; // Reset manual pause state on dot navigation
+                    this.goToSlide(index);
+                });
             });
         }
         
@@ -256,10 +260,12 @@ class ImageGallery {
             switch(e.key) {
                 case 'ArrowLeft':
                     e.preventDefault();
+                    this.manuallyPaused = false; // Reset manual pause state on keyboard navigation
                     this.previousImage();
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
+                    this.manuallyPaused = false; // Reset manual pause state on keyboard navigation
                     this.nextImage();
                     break;
             }
@@ -312,6 +318,7 @@ class ImageGallery {
             if (!isScrolling && Math.abs(diffX) > 50 && timeDiff < 500) {
                 // Pause slideshow during manual navigation
                 this.pauseSlideshow();
+                this.manuallyPaused = false; // Reset manual pause state on swipe navigation
                 
                 if (diffX > 0) {
                     // Swipe left - next image
@@ -321,20 +328,36 @@ class ImageGallery {
                     this.previousImage();
                 }
                 
-                // Resume slideshow after a delay
-                setTimeout(() => this.startSlideshow(), 3000);
+                // Resume slideshow after a delay (unless we're on venue page)
+                setTimeout(() => {
+                    if (!this.isOnVenuePage()) {
+                        this.startSlideshow();
+                    }
+                }, 3000);
             }
         }, { passive: true });
         
         // Add tap to pause/resume functionality
         this.container.addEventListener('click', (e) => {
+            // Don't interfere with venue links
+            if (e.target.closest('.venue-link')) {
+                return;
+            }
+            
             // Only handle clicks on the image area, not dots
             if (e.target.classList.contains('gallery-image') || e.target === this.container) {
+                // Don't pause/resume if we're on venue page - let users interact with links
+                if (this.isOnVenuePage()) {
+                    return;
+                }
+                
                 if (this.intervalId) {
+                    this.manuallyPaused = true;
                     this.pauseSlideshow();
                     // Show a subtle indicator that slideshow is paused
                     this.showPauseIndicator();
                 } else {
+                    this.manuallyPaused = false;
                     this.startSlideshow();
                 }
             }
@@ -409,6 +432,17 @@ class ImageGallery {
         if (!this.container.classList.contains('loaded')) {
             this.container.classList.add('loaded');
         }
+        
+        // Handle slideshow behavior based on current page
+        if (this.isOnVenuePage()) {
+            // Pause slideshow on venue page
+            this.pauseSlideshow();
+        } else {
+            // Resume slideshow if not already running and not manually paused
+            if (!this.intervalId && !this.manuallyPaused) {
+                this.startSlideshow();
+            }
+        }
     }
     
     getPreviousIndex() {
@@ -422,11 +456,26 @@ class ImageGallery {
     nextImage() {
         this.currentIndex = this.getNextIndex();
         this.updateDisplay();
+        
+        // If we're on the venue page, pause the slideshow to let users interact with links
+        if (this.isOnVenuePage()) {
+            this.pauseSlideshow();
+        }
     }
     
     previousImage() {
         this.currentIndex = this.getPreviousIndex();
         this.updateDisplay();
+        
+        // If we're on the venue page, pause the slideshow to let users interact with links
+        if (this.isOnVenuePage()) {
+            this.pauseSlideshow();
+        }
+    }
+    
+    isOnVenuePage() {
+        const currentImage = this.images[this.currentIndex];
+        return currentImage && currentImage.classList.contains('venue-page');
     }
     
     goToSlide(index) {
@@ -438,6 +487,12 @@ class ImageGallery {
     
     startSlideshow() {
         this.stopSlideshow();
+        
+        // Don't start slideshow if we're on the venue page
+        if (this.isOnVenuePage()) {
+            return;
+        }
+        
         this.intervalId = setInterval(() => {
             this.nextImage();
         }, this.transitionTime);
