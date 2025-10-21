@@ -448,6 +448,11 @@ html {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    pointer-events: none; /* Disable all interactions when not active */
+}
+
+.venue-page.active {
+    pointer-events: auto; /* Enable interactions when active */
 }
 
 .venue-content {
