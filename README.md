@@ -40,7 +40,7 @@ A beautiful, mobile-optimized web application designed specifically for mobile v
 
 1. **Clone or download** the project files to your local machine
 2. **Place your images** in the `pages` folder:
-   - `p1.jpg`, `p2.jpg`, `p3.jpg`, `p4.jpg`, `p5.jpg`, `p6.jpg`
+   - `p1.jpg`, `p2.jpg`, `p2.5.jpg`, `p3.jpg`, `p4.jpg`, `p5.jpg`, `p6.jpg`
 
 3. **Deploy the webapp**:
    - **Mobile**: Upload to a web server and access via mobile browser
@@ -86,10 +86,12 @@ A beautiful, mobile-optimized web application designed specifically for mobile v
 ├── pages/              # Image directory
 │   ├── p1.jpg
 │   ├── p2.jpg
+│   ├── p2.5.jpg
 │   ├── p3.jpg
 │   ├── p4.jpg
 │   ├── p5.jpg
-│   └── p6.jpg
+│   ├── p6.jpg
+│   └── p7.jpg
 ├── generate-images.html # Helper file for creating placeholder images
 └── README.md           # This file
 ```

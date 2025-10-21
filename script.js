@@ -136,10 +136,12 @@ function loadAllImages() {
     const imageUrls = [
         'pages/p1.jpg',
         'pages/p2.jpg',
+        'pages/p2.5.jpg',
         'pages/p3.jpg',
         'pages/p4.jpg',
         'pages/p5.jpg',
-        'pages/p6.jpg'
+        'pages/p6.jpg',
+        'pages/p7.jpg'
     ];
     
     imageUrls.forEach(url => {
