@@ -27,31 +27,8 @@ function initializeBackgroundAudio() {
     // Set volume to a comfortable level (0.3 = 30%)
     audio.volume = 0.3;
     
-    // Try to play audio immediately
-    const playPromise = audio.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
-            console.log('Background audio started playing');
-        }).catch(error => {
-            console.log('Auto-play was prevented, will try to play on first user interaction');
-            // If autoplay is blocked, try to play on first user interaction
-            const playOnInteraction = () => {
-                audio.play().then(() => {
-                    console.log('Background audio started after user interaction');
-                }).catch(e => console.log('Audio play failed:', e));
-                
-                // Remove listeners after successful play
-                document.removeEventListener('click', playOnInteraction);
-                document.removeEventListener('touchstart', playOnInteraction);
-                document.removeEventListener('keydown', playOnInteraction);
-            };
-            
-            document.addEventListener('click', playOnInteraction);
-            document.addEventListener('touchstart', playOnInteraction);
-            document.addEventListener('keydown', playOnInteraction);
-        });
-    }
+    // Don't try to auto-play immediately - wait for user interaction via play button
+    console.log('Background audio initialized, waiting for play button interaction');
 }
 
 // Resource loader to track all assets
@@ -237,11 +214,57 @@ class ImageGallery {
         this.intervalId = null;
         this.transitionTime = 5000; // Hardcoded to 5 seconds
         this.manuallyPaused = false; // Track manual pause state
+        this.slideshowStarted = false; // Track if slideshow has been started
         
         this.attachEventListeners();
+        this.attachPlayButtonListener();
         this.setTransitionType('fade'); // Hardcoded to fade transition
         this.updateDisplay(); // Initial display update
-        this.startSlideshow(); // Start slideshow after everything is loaded
+        // Don't start slideshow automatically - wait for play button click
+    }
+    
+    attachPlayButtonListener() {
+        const playButton = document.getElementById('playButton');
+        if (playButton) {
+            playButton.addEventListener('click', () => {
+                this.startShow();
+            });
+        }
+    }
+    
+    startShow() {
+        if (!this.slideshowStarted) {
+            this.slideshowStarted = true;
+            // Start background audio
+            this.startBackgroundAudio();
+            // Move to the next slide (first actual image)
+            this.nextImage();
+            // Start the automatic slideshow
+            this.startSlideshow();
+            
+            // Hide the play button after starting the show
+            const playButton = document.getElementById('playButton');
+            if (playButton) {
+                playButton.style.display = 'none';
+            }
+        }
+    }
+    
+    startBackgroundAudio() {
+        const audio = document.getElementById('backgroundAudio');
+        if (audio) {
+            // Set volume to a comfortable level
+            audio.volume = 0.3;
+            
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log('Background audio started playing with slideshow');
+                }).catch(error => {
+                    console.log('Audio play failed:', error);
+                });
+            }
+        }
     }
     
     attachEventListeners() {
@@ -250,7 +273,16 @@ class ImageGallery {
             this.dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     this.manuallyPaused = false; // Reset manual pause state on dot navigation
-                    this.goToSlide(index);
+                    
+                    // If slideshow hasn't started and user clicks on a dot other than intro (index 0)
+                    if (!this.slideshowStarted && index > 0) {
+                        this.startShow();
+                        // Set to the clicked slide
+                        this.currentIndex = index;
+                        this.updateDisplay();
+                    } else {
+                        this.goToSlide(index);
+                    }
                 });
             });
         }
@@ -261,12 +293,20 @@ class ImageGallery {
                 case 'ArrowLeft':
                     e.preventDefault();
                     this.manuallyPaused = false; // Reset manual pause state on keyboard navigation
-                    this.previousImage();
+                    if (!this.slideshowStarted) {
+                        this.startShow();
+                    } else {
+                        this.previousImage();
+                    }
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
                     this.manuallyPaused = false; // Reset manual pause state on keyboard navigation
-                    this.nextImage();
+                    if (!this.slideshowStarted) {
+                        this.startShow();
+                    } else {
+                        this.nextImage();
+                    }
                     break;
             }
         });
@@ -320,27 +360,31 @@ class ImageGallery {
                 this.pauseSlideshow();
                 this.manuallyPaused = false; // Reset manual pause state on swipe navigation
                 
-                if (diffX > 0) {
-                    // Swipe left - next image
-                    this.nextImage();
+                if (!this.slideshowStarted) {
+                    this.startShow();
                 } else {
-                    // Swipe right - previous image
-                    this.previousImage();
-                }
-                
-                // Resume slideshow after a delay (unless we're on venue page)
-                setTimeout(() => {
-                    if (!this.isOnVenuePage()) {
-                        this.startSlideshow();
+                    if (diffX > 0) {
+                        // Swipe left - next image
+                        this.nextImage();
+                    } else {
+                        // Swipe right - previous image
+                        this.previousImage();
                     }
-                }, 3000);
+                    
+                    // Resume slideshow after a delay (unless we're on venue page)
+                    setTimeout(() => {
+                        if (!this.isOnVenuePage()) {
+                            this.startSlideshow();
+                        }
+                    }, 3000);
+                }
             }
         }, { passive: true });
         
         // Add tap to pause/resume functionality
         this.container.addEventListener('click', (e) => {
-            // Don't interfere with venue links
-            if (e.target.closest('.venue-link')) {
+            // Don't interfere with venue links or play button
+            if (e.target.closest('.venue-link') || e.target.closest('#playButton')) {
                 return;
             }
             
@@ -348,6 +392,12 @@ class ImageGallery {
             if (e.target.classList.contains('gallery-image') || e.target === this.container) {
                 // Don't pause/resume if we're on venue page - let users interact with links
                 if (this.isOnVenuePage()) {
+                    return;
+                }
+                
+                // If slideshow hasn't started, start it
+                if (!this.slideshowStarted) {
+                    this.startShow();
                     return;
                 }
                 
@@ -493,9 +543,12 @@ class ImageGallery {
             return;
         }
         
-        this.intervalId = setInterval(() => {
-            this.nextImage();
-        }, this.transitionTime);
+        // Only start interval if slideshow has been manually started
+        if (this.slideshowStarted) {
+            this.intervalId = setInterval(() => {
+                this.nextImage();
+            }, this.transitionTime);
+        }
     }
     
     pauseSlideshow() {
