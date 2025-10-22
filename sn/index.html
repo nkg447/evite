@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #000;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 100vw;
+            margin-bottom: 15px;
+            position: relative;
+            display: none; /* Initially hidden */
+        }
+        
+        .invitation-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 40px 20px;
+            width: calc(100% - 20px);
+            max-width: 400px;
+            margin: 0 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+        
+        .invitation-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .invitation-subtitle {
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .view-invitation-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .view-invitation-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .view-invitation-btn:active {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            background-color: #000;
+        }
+        
+        /* Mobile-specific video styling */
+        video::-webkit-media-controls-panel {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .content {
+            display: none;
+            text-align: center;
+            background-color: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: calc(100% - 20px);
+            max-width: 400px;
+            margin: 0 10px;
+        }
+        
+        .content.show {
+            display: block;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .venue-info {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .venue-link {
+            color: #007AFF;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 8px;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        /* Enhanced touch targets for mobile */
+        .venue-link:active {
+            background-color: #007AFF;
+            color: white;
+            transform: scale(0.98);
+        }
+        
+        .venue-link:hover {
+            background-color: rgba(0, 122, 255, 0.1);
+            border-color: #007AFF;
+        }
+        
+        /* Mobile-specific optimizations */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .invitation-screen {
+                width: calc(100% - 10px);
+                margin: 0 5px;
+                padding: 35px 15px;
+            }
+            
+            .invitation-title {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+            
+            .invitation-subtitle {
+                font-size: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .view-invitation-btn {
+                padding: 14px 28px;
+                font-size: 16px;
+                min-height: 50px;
+            }
+            
+            .video-container {
+                margin-bottom: 10px;
+            }
+            
+            video {
+                border-radius: 6px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+                width: calc(100% - 10px);
+                margin: 0 5px;
+            }
+            
+            h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+            
+            .venue-info {
+                font-size: 16px;
+            }
+            
+            .venue-link {
+                font-size: 16px;
+                padding: 12px 16px;
+                margin-top: 12px;
+                min-height: 44px; /* iOS recommended touch target */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        /* Portrait orientation optimization */
+        @media screen and (orientation: portrait) and (max-width: 480px) {
+            body {
+                padding: 2px;
+            }
+            
+            .invitation-screen {
+                border-radius: 8px;
+                padding: 30px 12px;
+            }
+            
+            .invitation-title {
+                font-size: 22px;
+            }
+            
+            .invitation-subtitle {
+                font-size: 14px;
+            }
+            
+            .view-invitation-btn {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+            
+            .content {
+                border-radius: 8px;
+                padding: 18px 12px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .venue-info {
+                font-size: 15px;
+            }
+        }
+        
+        /* Landscape orientation for mobile */
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            .invitation-screen {
+                padding: 25px 20px;
+                max-width: 350px;
+            }
+            
+            .invitation-title {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            .invitation-subtitle {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .view-invitation-btn {
+                padding: 10px 24px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+            
+            body {
+                flex-direction: row;
+                align-items: flex-start;
+                padding: 10px;
+            }
+            
+            .video-container {
+                flex: 1;
+                margin-right: 15px;
+                margin-bottom: 0;
+            }
+            
+            .content {
+                flex: 0 0 250px;
+                align-self: center;
+            }
+            
+            .content.show {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="invitationScreen" class="invitation-screen">
+        <h1 class="invitation-title">💌 Wedding Invitation</h1>
+        <button id="viewInvitationBtn" class="view-invitation-btn">
+            ▶ View Invitation
+        </button>
+    </div>
+    
+    <div class="video-container" id="videoContainer">
+        <video id="videoPlayer" controls playsinline preload="metadata">
+            <source src="video/vid.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    
+    <div id="content" class="content">
+        <h2>Venue</h2>
+        <div class="venue-info">
+            <a href="https://maps.app.goo.gl/D1aFfXHxVpv63pSEA" target="_blank" class="venue-link">Hotel Sunpark</a>
+        </div>
+        <div class="venue-info">
+            <a href="https://maps.app.goo.gl/2gcagKCpLVZGYgUa7" target="_blank" class="venue-link">Hotel Royal Inn Palace</a>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const content = document.getElementById('content');
+        const invitationScreen = document.getElementById('invitationScreen');
+        const videoContainer = document.getElementById('videoContainer');
+        const viewInvitationBtn = document.getElementById('viewInvitationBtn');
+        
+        // Handle "View Invitation" button click
+        viewInvitationBtn.addEventListener('click', function() {
+            // Hide invitation screen with animation
+            invitationScreen.style.transform = 'scale(0.9)';
+            invitationScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                invitationScreen.classList.add('hidden');
+                videoContainer.style.display = 'block';
+                
+                // Auto-play video after showing it (with user gesture)
+                video.play().catch(function(error) {
+                    console.log('Auto-play prevented:', error);
+                    // Fallback: video will need manual play
+                });
+            }, 300);
+        });
+        
+        // Prevent zoom on iOS when tapping video controls
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Handle video end event
+        video.addEventListener('ended', function() {
+            content.classList.add('show');
+            
+            // Scroll content into view on mobile after video ends
+            setTimeout(() => {
+                content.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 300);
+        });
+        
+        // Optimize for mobile performance
+        video.addEventListener('loadstart', function() {
+            // Reduce memory usage on mobile
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                video.setAttribute('preload', 'none');
+            }
+        });
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            setTimeout(() => {
+                // Adjust video size after orientation change
+                video.style.height = 'auto';
+                
+                // Re-center content if visible
+                if (content.classList.contains('show')) {
+                    content.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }
+            }, 500);
+        });
+        
+        // Add smooth transition for invitation screen
+        invitationScreen.style.transition = 'all 0.3s ease';
+    </script>
+</body>
+</html>
