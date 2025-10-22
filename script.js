@@ -117,6 +117,7 @@ function loadAllImages() {
         'pages/p3.jpg',
         'pages/p4.jpg',
         'pages/p5.jpg',
+        'pages/p5.5.jpg',
         'pages/p6.jpg',
         'pages/p7.jpg'
     ];
