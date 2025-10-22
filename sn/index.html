@@ -13,7 +13,7 @@
     <meta property="og:image:alt" content="Sukriti & Nikunj Wedding Invitation">
     <meta property="og:site_name" content="Sukriti & Nikunj Wedding">
     <meta property="og:locale" content="en_US">
-    <title>Video Player</title>
+    <title>Sukriti & Nikunj Invitation</title>
     <style>
         * {
             box-sizing: border-box;
@@ -120,13 +120,73 @@
         .content {
             display: none;
             text-align: center;
-            background-color: white;
-            padding: 25px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 30px 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
             width: calc(100% - 20px);
             max-width: 400px;
             margin: 0 10px;
+            border: 2px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(0%) translateY(0%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .content-header {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .content-divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        
+        .decorative-flourish {
+            font-size: 24px;
+            color: #667eea;
+            margin: 10px 0;
+            opacity: 0.7;
+        }
+        
+        .venue-container {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            position: relative;
+        }
+        
+        .venue-container::before {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 8px;
+            font-size: 16px;
         }
         
         .content.show {
@@ -147,39 +207,76 @@
         
         h2 {
             color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: 600;
+            margin-bottom: 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
         }
         
         .venue-info {
-            font-size: 18px;
-            color: #555;
+            font-size: 16px;
+            color: #666;
             line-height: 1.6;
+            margin: 10px 0;
+        }
+        
+        .venue-label {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         
         .venue-link {
-            color: #007AFF;
+            color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 25px;
             display: inline-block;
-            margin-top: 8px;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
+            margin: 8px 0;
+            transition: all 0.3s ease;
+            border: 2px solid #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .venue-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .venue-link:hover::before {
+            left: 100%;
         }
         
         /* Enhanced touch targets for mobile */
         .venue-link:active {
-            background-color: #007AFF;
+            background: #667eea;
             color: white;
             transform: scale(0.98);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
         .venue-link:hover {
-            background-color: rgba(0, 122, 255, 0.1);
-            border-color: #007AFF;
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
         
         /* Mobile-specific optimizations */
@@ -219,24 +316,30 @@
             }
             
             .content {
-                padding: 20px 15px;
+                padding: 25px 20px;
                 width: calc(100% - 10px);
                 margin: 0 5px;
+                border-radius: 15px;
+            }
+            
+            .venue-container {
+                padding: 15px;
+                margin: 10px 0;
             }
             
             h2 {
-                font-size: 22px;
-                margin-bottom: 15px;
+                font-size: 24px;
+                margin-bottom: 0;
             }
             
             .venue-info {
-                font-size: 16px;
+                font-size: 15px;
             }
             
             .venue-link {
-                font-size: 16px;
-                padding: 12px 16px;
-                margin-top: 12px;
+                font-size: 15px;
+                padding: 10px 16px;
+                margin: 6px 0;
                 min-height: 44px; /* iOS recommended touch target */
                 display: flex;
                 align-items: center;
@@ -269,16 +372,28 @@
             }
             
             .content {
-                border-radius: 8px;
-                padding: 18px 12px;
+                border-radius: 12px;
+                padding: 20px 15px;
+                height: 100vh;
+            }
+            
+            .venue-container {
+                padding: 12px;
+                margin: 8px 0;
+                border-radius: 10px;
             }
             
             h2 {
-                font-size: 20px;
+                font-size: 22px;
             }
             
             .venue-info {
-                font-size: 15px;
+                font-size: 14px;
+            }
+            
+            .venue-link {
+                font-size: 14px;
+                padding: 8px 14px;
             }
         }
         
@@ -324,6 +439,7 @@
             
             .content.show {
                 display: block;
+                height: 100vh;
             }
         }
     </style>
@@ -344,13 +460,28 @@
     </div>
     
     <div id="content" class="content">
-        <h2>Venue</h2>
-        <div class="venue-info">
-            <a href="https://maps.app.goo.gl/D1aFfXHxVpv63pSEA" target="_blank" class="venue-link">Hotel Sunpark</a>
+        <div class="content-header">
+            <div class="decorative-flourish">✨</div>
+            <h2>Venue</h2>
+            <div class="content-divider"></div>
+            <div class="decorative-flourish">🌸</div>
         </div>
-        <div class="venue-info">
-            <a href="https://maps.app.goo.gl/2gcagKCpLVZGYgUa7" target="_blank" class="venue-link">Hotel Royal Inn Palace</a>
+        
+        <div class="venue-container">
+            <div class="venue-label">Hotel Sunpark Inn</div>
+            <div class="venue-info">
+                <a href="https://maps.app.goo.gl/D1aFfXHxVpv63pSEA" target="_blank" class="venue-link">Open in Maps</a>
+            </div>
         </div>
+        
+        <div class="venue-container">
+            <div class="venue-label">Hotel Royal Inn Palace</div>
+            <div class="venue-info">
+                <a href="https://maps.app.goo.gl/2gcagKCpLVZGYgUa7" target="_blank" class="venue-link">Open in Maps</a>
+            </div>
+        </div>
+        
+        <div class="decorative-flourish" style="margin-top: 20px;">💒 ✨ 💒</div>
     </div>
 
     <script>
